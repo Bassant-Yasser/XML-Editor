@@ -1,0 +1,10 @@
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\bin\Debug\XML2JSON.exe.config
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\bin\Debug\XML2JSON.exe
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\bin\Debug\XML2JSON.pdb
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csprojAssemblyReference.cache
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.Form1.resources
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.Properties.Resources.resources
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csproj.GenerateResource.cache
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.exe
+C:\Users\Lenovo\source\repos\XML2JSON\XML2JSON\obj\Debug\XML2JSON.pdb
