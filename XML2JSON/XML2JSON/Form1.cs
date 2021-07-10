@@ -50,7 +50,70 @@ namespace XML2JSON
             Invalidate();
         }
 
+        /****************************************************************************/
+        /****************************Check Consistency*******************************/
+        static bool Check_Consistency(List<string> tags)
+        {
+            Stack<string> mystack = new Stack<string>();
+            mystack.Push(tags[0]);           
+            for (int i = 1; i < tags.Count; i++)
+            {
+                if (tags[i] == "frame")
+                {
+                    // do nothing
+                }
 
+                else if (tags[i] == "<!--")
+                {
+                    mystack.Push(tags[i]);
+                }
+
+                else if (tags[i] == "-->")
+                {
+                    if (mystack.Count == 0)
+                    {
+                        return false;
+                    }
+
+
+                    if (mystack.Peek() == "<!--")
+                    {
+                        mystack.Pop();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                /*check if it's an end tag*/
+                else if (tags[i].Contains('/'))
+                {
+                    string str = tags[i].TrimStart('/');
+                    if (mystack.Count == 0)
+                    {
+                        return false;
+                    }
+
+                    
+                    if (str.CompareTo(mystack.Peek()) == 0)
+                    {
+                        mystack.Pop();
+                    }
+
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    mystack.Push(tags[i]);
+                }
+            }
+            return true;
+        }
+        /****************************************************************************/
 
         //choose file
         private void button3_Click(object sender, EventArgs e)
