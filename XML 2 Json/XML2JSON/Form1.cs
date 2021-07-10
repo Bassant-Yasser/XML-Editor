@@ -14,6 +14,8 @@ namespace XML2JSON
 {
     public partial class Form1 : Form
     {
+        List<string> tags = new List<string>();
+        String text;
         public Form1()
         {
             InitializeComponent();
@@ -111,6 +113,10 @@ namespace XML2JSON
                     mystack.Push(tags[i]);
                 }
             }
+            if (mystack.Count != 0)
+            {
+                return false;
+            }
             return true;
         }
         /****************************************************************************/
@@ -123,6 +129,7 @@ namespace XML2JSON
             if (openFileDialog2.ShowDialog() == DialogResult.OK)
             {
                 string str = openFileDialog2.FileName;
+                text = File.ReadAllText(str);
                 MessageBox.Show(str);
                 StreamReader sr = new StreamReader(str);
                 while (line != null)
@@ -133,8 +140,65 @@ namespace XML2JSON
                         listBox2.Items.Add(line);
                     }
                 }
+
                 sr.Close();
             }
+        }
+
+        private void xml_tags_to_array()
+        {
+            for (int i = 0; i < text.Count(); i++)
+            {
+                text = text.TrimStart();
+                if (text[i] == '<')
+                {
+                    if (text[i + 1] == '!' && text[i + 2] == '-' && text[i + 3] == '-')
+                    {
+                        tags.Add("<!--");
+                        for (int j = i + 4; j < text.Count(); j++)
+                        {
+                            if (text[j] == '-' && text[j + 1] == '-' && text[j + 2] == '>')
+                            {
+                                tags.Add("-->");
+                                text = text.Substring(j + 3);
+                                break;
+                            }
+                        }
+                        i = -1;
+                        continue;
+                    }
+
+                    int firstStringPosition = text.IndexOf("<");
+                    int secondStringPosition = text.IndexOf(">");
+                    int thirdStringPosition = text.IndexOf(" ");
+                    int number = secondStringPosition;
+                    if (thirdStringPosition < secondStringPosition && thirdStringPosition > firstStringPosition && thirdStringPosition != -1)
+                        number = thirdStringPosition;
+                    string stringBetweenTwoStrings = text.Substring(firstStringPosition + 1,
+                    number - firstStringPosition - 1);
+
+                    tags.Add(stringBetweenTwoStrings);
+                    text = text.Substring(secondStringPosition + 1);
+                    i = -1;
+                }
+            }
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            xml_tags_to_array();
+            for (int i = 0; i < tags.Count; i++)
+            {
+                Console.WriteLine(tags[i]);
+            }
+            bool status = Check_Consistency(tags);
+            Console.WriteLine(status);
+
         }
     }
 }
