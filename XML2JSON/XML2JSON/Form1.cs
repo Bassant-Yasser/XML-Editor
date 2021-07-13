@@ -653,11 +653,12 @@ namespace XML2JSON
             }
         }
 
-
+        /****************************************************************************/
+        /*******************************Fix Errors**********************************/
         private void Fix_XML_Errors(int fix_show_errors)    //if show errors -> 0, fix errors -> 1
         {
-            Stack<string> stack = new Stack<string>();
-            Stack<int> spaces = new Stack<int>();
+            Stack<string> stack = new Stack<string>(); // holds the tags
+            Stack<int> spaces = new Stack<int>(); // spaces at the begining of a line tag
 
             int number = 0, errors = 0;
             flag = 1;
@@ -667,7 +668,28 @@ namespace XML2JSON
             {
                 if (strings[i].TrimStart()[0] == '<' && strings[i].TrimStart()[1] != '/')   //opening tag 
                 {
-
+                    int length = strings[i].TrimEnd().Count();
+                    if (strings[i].TrimStart()[1] == '!' && strings[i].TrimEnd()[length - 1] == '>' && strings[i].TrimEnd()[length - 2] == '-')
+                    {
+                        // ignore
+                        number += 2;
+                        richTextBox2.SelectedText += strings[i];
+                        continue;
+                    }
+                    if (strings[i].TrimStart()[1] == '?' && strings[i].TrimEnd()[length - 1] == '>' && strings[i].TrimEnd()[length - 2] == '?')
+                    {
+                        // ignore
+                        number++;
+                        richTextBox2.SelectedText += strings[i];
+                        continue;
+                    }
+                    if (strings[i].TrimEnd()[length - 1] == '>' && strings[i].TrimEnd()[length - 2] == '/')
+                    {
+                        // ignore self closing tag
+                        number++;
+                        richTextBox2.SelectedText += strings[i];
+                        continue;
+                    }
                     int flag = 0;
                     int count = Count_Spaces(strings[i]);
                     if (spaces.Count == 0 || count > spaces.Peek())
@@ -696,8 +718,6 @@ namespace XML2JSON
 
                         if (fix_show_errors == 0)
                         {
-                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                            richTextBox2.SelectionFont = font;
                             richTextBox2.SelectionColor = Color.Red;
                             richTextBox2.SelectedText += strings[i - 1];
                         }
@@ -732,8 +752,6 @@ namespace XML2JSON
 
                                 if (fix_show_errors == 0)
                                 {
-                                    Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                                    richTextBox2.SelectionFont = font;
                                     richTextBox2.SelectionColor = Color.Black;
                                     richTextBox2.SelectedText += strings[i];
                                 }
@@ -746,8 +764,6 @@ namespace XML2JSON
 
                                 if (fix_show_errors == 0)
                                 {
-                                    Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                                    richTextBox2.SelectionFont = font;
                                     richTextBox2.SelectionColor = Color.Red;
                                     richTextBox2.SelectedText += strings[i];
                                 }
@@ -778,8 +794,6 @@ namespace XML2JSON
 
                         if (fix_show_errors == 0)
                         {
-                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                            richTextBox2.SelectionFont = font;
                             richTextBox2.SelectionColor = Color.Black;
                             richTextBox2.SelectedText += strings[i];
                         }
@@ -801,8 +815,6 @@ namespace XML2JSON
 
                         if (fix_show_errors == 0)
                         {
-                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                            richTextBox2.SelectionFont = font;
                             richTextBox2.SelectionColor = Color.Black;
                             richTextBox2.SelectedText += strings[i];
                         }
@@ -835,23 +847,31 @@ namespace XML2JSON
 
                         spaces.Pop();
                         stack.Pop();
-                        while (stack.Peek() != tags[number].Trim('/'))
+                        if (stack.Count() != 0)
                         {
-                            errors++;
-                            String str2 = "";
-                            for (int k = 0; k < spaces.Peek(); k++)
+                            while (stack.Peek() != tags[number].Trim('/'))
                             {
-                                str2 += " ";
-                            }
-                            str2 += "</" + stack.Peek() + '>';
+                                errors++;
+                                String str2 = "";
+                                for (int k = 0; k < spaces.Peek(); k++)
+                                {
+                                    str2 += " ";
+                                }
+                                str2 += "</" + stack.Peek() + '>';
 
-                            if (fix_show_errors == 1)
-                            {
-                                richTextBox2.SelectedText += str2 + Environment.NewLine;
+                                if (fix_show_errors == 1)
+                                {
+                                    richTextBox2.SelectedText += str2 + Environment.NewLine;
+                                }
+                                stack.Pop();                                
+                                spaces.Pop();
+                                if (stack.Count() == 0)
+                                {
+                                    break;
+                                }
                             }
-                            stack.Pop();
-                            spaces.Pop();
                         }
+                        
 
                         if (fix_show_errors == 1)
                         {
@@ -860,8 +880,6 @@ namespace XML2JSON
 
                         if (fix_show_errors == 0)
                         {
-                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                            richTextBox2.SelectionFont = font;
                             richTextBox2.SelectionColor = Color.Red;
                             richTextBox2.SelectedText += strings[i];
                         }
@@ -887,8 +905,6 @@ namespace XML2JSON
 
                     if (fix_show_errors == 0)
                     {
-                        Font font = new Font("Tahoma", 8, FontStyle.Regular);
-                        richTextBox2.SelectionFont = font;
                         richTextBox2.SelectionColor = Color.Black;
                         richTextBox2.SelectedText += strings[i];
                     }
@@ -1046,6 +1062,11 @@ namespace XML2JSON
             File.AppendAllText(path, string.Join("", compressed));
             string decompressed = Decompress(compressed);
             Console.WriteLine(decompressed);
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
         }
 
         //check consistency
