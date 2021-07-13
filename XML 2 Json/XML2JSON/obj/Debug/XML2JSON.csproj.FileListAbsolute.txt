@@ -27,3 +27,12 @@ D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML 2 
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.csproj.GenerateResource.Cache
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.exe
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.pdb
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\bin\Debug\XML2JSON.exe.config
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\bin\Debug\XML2JSON.exe
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\bin\Debug\XML2JSON.pdb
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.csprojResolveAssemblyReference.cache
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.Form1.resources
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.Properties.Resources.resources
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.csproj.GenerateResource.Cache
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.exe
+D:\Bassant\3rd CSE Second term\Data Structure\XML project\XML 2 Json\XML2JSON\obj\Debug\XML2JSON.pdb

@@ -15,7 +15,9 @@ namespace XML2JSON
     public partial class Form1 : Form
     {
         List<string> tags = new List<string>();
-        String text;
+        List<int> errors_index = new List<int>();
+        String text, text2;
+        int flag = 0;
         public Form1()
         {
             InitializeComponent();
@@ -125,24 +127,281 @@ namespace XML2JSON
         private void button3_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog2 = new OpenFileDialog();
+            richTextBox1.Clear();
             string line = " ";
             if (openFileDialog2.ShowDialog() == DialogResult.OK)
             {
                 string str = openFileDialog2.FileName;
                 text = File.ReadAllText(str);
-                MessageBox.Show(str);
+                text2 = File.ReadAllText(str);
+
                 StreamReader sr = new StreamReader(str);
                 while (line != null)
                 {
                     line = sr.ReadLine();
                     if (line != null)
                     {
-                        listBox2.Items.Add(line);
+                        line = line + '\r' + '\n';
+                        richTextBox1.Text += line; 
                     }
                 }
-
                 sr.Close();
             }
+        }
+
+        private void Fix_XML_Errors(int fix_show_errors)    //if show errors -> 0, fix errors -> 1
+        {
+            Stack<string> stack = new Stack<string>();
+            Stack<int> spaces = new Stack<int>();
+
+            int number = 0, errors = 0;
+            flag = 1;
+
+            string[] strings = text2.Split('\n');
+            for (int i = 0; i < strings.Count(); i++)
+            {
+                if (strings[i].TrimStart()[0] == '<' && strings[i].TrimStart()[1] != '/')   //opening tag 
+                {
+
+                    int flag = 0;
+                    int count = Count_Spaces(strings[i]);
+                    if (spaces.Count == 0 || count > spaces.Peek())
+                    {
+                        spaces.Push(count);  //0 1 2  
+                    }     
+                    else
+                    {
+                        errors++;
+                        stack.Pop();
+
+                        Console.Write(richTextBox2.Lines);
+                        List<string> myList = richTextBox2.Lines.ToList();
+                        if (myList.Count > 0)
+                        {
+                            myList.RemoveAt(myList.Count - 2);
+                            Console.WriteLine(myList);
+                            richTextBox2.Clear();
+                            for(int m = 0; m < myList.Count(); m++)
+                            {
+                                richTextBox2.SelectedText += myList.ToArray()[m];
+                                if (m != myList.Count() - 1)
+                                    richTextBox2.SelectedText += '\n';
+                            }
+                        }
+                        
+                        if(fix_show_errors == 0)
+                        {
+                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                            richTextBox2.SelectionFont = font;
+                            richTextBox2.SelectionColor = Color.Red;
+                            richTextBox2.SelectedText += strings[i - 1];
+                        }
+
+                        strings[i - 1] = strings[i - 1].TrimEnd();
+                        strings[i - 1] += "</" + tags[number - 1] + ">";
+                        Console.WriteLine(strings[i - 1]);
+                        
+                        if(fix_show_errors == 1)
+                        {
+                            richTextBox2.SelectedText += strings[i - 1] + Environment.NewLine;
+                        }
+                        flag = 1;
+                    }
+                    stack.Push(tags[number]);
+                    number++;
+
+                    string line = strings[i].TrimStart();
+                    for (int j = 1; j < line.Count(); j++)
+                    {
+                        if (line[j] == '<' && line[j + 1] == '/') //closing fe nafs elsatr
+                        {
+                            flag = 1;
+                            if (tags[number].Trim('/') == stack.Peek())
+                            {
+                                stack.Pop();
+
+                                if(fix_show_errors == 1)
+                                {
+                                    richTextBox2.SelectedText += strings[i];
+                                }
+
+                                if(fix_show_errors == 0)
+                                {
+                                    Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                                    richTextBox2.SelectionFont = font;
+                                    richTextBox2.SelectionColor = Color.Black;
+                                    richTextBox2.SelectedText += strings[i];
+                                }
+
+                            }
+                            else
+                            {
+                                stack.Pop();
+                                errors++;
+
+                                if(fix_show_errors == 0)
+                                {
+                                    Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                                    richTextBox2.SelectionFont = font;
+                                    richTextBox2.SelectionColor = Color.Red;
+                                    richTextBox2.SelectedText += strings[i];
+                                }
+
+                                int secondStringPosition = strings[i].IndexOf("/");
+                                strings[i] = strings[i].Substring(0, secondStringPosition - 1);
+                                strings[i] += "</";
+                                strings[i] += tags[number-1];
+                                strings[i] += '>';
+                                Console.WriteLine(strings[i]);
+
+                                if(fix_show_errors == 1)
+                                {
+                                    richTextBox2.SelectedText += strings[i] + Environment.NewLine;
+                                }
+                            }   
+                            number++;
+                            spaces.Pop();
+                            
+                        }
+                    }
+                    if(flag == 0)
+                    {
+                        if(fix_show_errors == 1)
+                        {
+                            richTextBox2.SelectedText += strings[i];
+                        }
+
+                        if(fix_show_errors == 0)
+                        {
+                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                            richTextBox2.SelectionFont = font;
+                            richTextBox2.SelectionColor = Color.Black;
+                            richTextBox2.SelectedText += strings[i];
+                        }
+                    }     
+                }
+                else if(strings[i].TrimStart()[0] == '<' && strings[i].TrimStart()[1] == '/')
+                {
+                    int count = Count_Spaces(strings[i]);
+                    if(count == spaces.Peek() && tags[number].Trim('/') == stack.Peek())
+                    {
+                        number++;
+                        spaces.Pop();
+                        stack.Pop();
+
+                        if(fix_show_errors == 1)
+                        {
+                            richTextBox2.SelectedText += strings[i];
+                        }
+
+                        if(fix_show_errors == 0)
+                        {
+                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                            richTextBox2.SelectionFont = font;
+                            richTextBox2.SelectionColor = Color.Black;
+                            richTextBox2.SelectedText += strings[i];
+                        }
+
+                    }
+                    else if(count < spaces.Peek()) //zy halt el followers
+                    {
+                        errors++;
+                        strings[i-1] += '\n';
+                        for(int k = 0; k < spaces.Peek(); k++)
+                        {
+                            strings[i-1] += ' ';
+                        }
+                        strings[i-1] += "</" + stack.Peek() + '>';
+                        Console.WriteLine(strings[i-1]);
+
+
+                        String str = "";
+                        for(int k = 0; k < spaces.Peek(); k++)
+                        {
+                            str += " ";
+                        }
+                        str += "</" + stack.Peek() + '>';
+
+                        if(fix_show_errors == 1)
+                        {
+                            richTextBox2.SelectedText += str + Environment.NewLine;
+                        }
+                        
+
+                        spaces.Pop();
+                        stack.Pop();
+                        while (stack.Peek() != tags[number].Trim('/'))
+                        {
+                            errors++;
+                            String str2 = "";
+                            for (int k = 0; k < spaces.Peek(); k++)
+                            {
+                                str2 += " ";
+                            }
+                            str2 += "</" + stack.Peek() + '>';
+
+                            if (fix_show_errors == 1)
+                            {
+                                richTextBox2.SelectedText += str2 + Environment.NewLine;
+                            }
+                            stack.Pop();
+                            spaces.Pop();
+                        }
+
+                        if(fix_show_errors == 1)
+                        {
+                            richTextBox2.SelectedText += strings[i];
+                        }
+
+                        if(fix_show_errors == 0)
+                        {
+                            Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                            richTextBox2.SelectionFont = font;
+                            richTextBox2.SelectionColor = Color.Red;
+                            richTextBox2.SelectedText += strings[i];
+                        }
+
+                        spaces.Pop();
+                        if(stack.Count != 0)
+                             stack.Pop();
+                        number++;
+                    }
+                    else if(tags[number] != stack.Peek())
+                    {
+                        number++;
+                        stack.Pop();
+                        errors++;
+                    }
+                }
+                else
+                {
+                    if(fix_show_errors == 1)
+                    {
+                        richTextBox2.SelectedText += strings[i];
+                    }
+
+                    if(fix_show_errors == 0)
+                    {
+                        Font font = new Font("Tahoma", 8, FontStyle.Regular);
+                        richTextBox2.SelectionFont = font;
+                        richTextBox2.SelectionColor = Color.Black;
+                        richTextBox2.SelectedText += strings[i];
+                    }
+                }
+            }
+            Console.WriteLine(errors);
+        }
+
+        private int Count_Spaces(string str)
+        {
+            int count = 0;
+            for(int i = 0; i < str.Count(); i++)
+            {
+                if (str[i] != ' ')
+                    return count;
+                count++;
+            }
+            return count;
         }
 
         private void xml_tags_to_array()
@@ -189,6 +448,24 @@ namespace XML2JSON
 
         }
 
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            richTextBox2.Clear();
+            Fix_XML_Errors(1);
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            richTextBox2.Clear();
+            Fix_XML_Errors(0);
+        }
+
         private void button6_Click(object sender, EventArgs e)
         {
             xml_tags_to_array();
@@ -198,7 +475,6 @@ namespace XML2JSON
             }
             bool status = Check_Consistency(tags);
             Console.WriteLine(status);
-
         }
     }
 }
