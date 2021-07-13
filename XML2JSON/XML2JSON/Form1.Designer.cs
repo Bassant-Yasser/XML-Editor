@@ -127,9 +127,9 @@ namespace XML2JSON
             this.listBox3.FormattingEnabled = true;
             this.listBox3.HorizontalScrollbar = true;
             this.listBox3.ItemHeight = 16;
-            this.listBox3.Location = new System.Drawing.Point(1027, 150);
+            this.listBox3.Location = new System.Drawing.Point(1157, 150);
             this.listBox3.Name = "listBox3";
-            this.listBox3.Size = new System.Drawing.Size(256, 500);
+            this.listBox3.Size = new System.Drawing.Size(126, 500);
             this.listBox3.TabIndex = 7;
             // 
             // button8
@@ -153,10 +153,11 @@ namespace XML2JSON
             // 
             // richTextBox2
             // 
+            this.richTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox2.Location = new System.Drawing.Point(692, 150);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(312, 548);
-            this.richTextBox2.TabIndex = 11;
+            this.richTextBox2.Size = new System.Drawing.Size(444, 548);
+            this.richTextBox2.TabIndex = 1;
             this.richTextBox2.Text = "";
             // 
             // label3

@@ -321,7 +321,171 @@ namespace XML2JSON
             
         }
 
-        
+
+        public void print(xmlTree tree, treeNode r)
+        {
+            int tab = tree.height(r) + 1; //level num + 1 extra tab 
+            if (r == tree.Root)
+            {
+                Console.WriteLine("{");
+                richTextBox2.SelectedText = "{" + Environment.NewLine;
+            }
+            for (int k = 0; k < tab; k++)
+            {
+                Console.Write("\t");
+                richTextBox2.SelectedText = "\t";
+            }
+            Console.Write('"' + r.tagName + '"' + ": ");
+            richTextBox2.SelectedText = '"' + r.tagName + '"' + ": ";
+            if (r.children.Count() == 0)
+            {
+                Console.Write('"' + r.data + '"');
+                richTextBox2.SelectedText = '"' + r.data + '"';
+                int index = r.parent.children.IndexOf(r);
+                if (index + 1 != r.parent.children.Count())
+                {
+                    Console.WriteLine(",");
+                    richTextBox2.SelectedText = "," + Environment.NewLine;
+                }
+            }
+            else if (r.children.Count() == 1)
+            {
+                Console.WriteLine("[");
+                richTextBox2.SelectedText = "[" + Environment.NewLine;
+                foreach (treeNode i in r.children)
+                {
+                    print(tree, i);
+                }
+                for (int k = 0; k < tab; k++)
+                {
+                    Console.Write("\t");
+                    richTextBox2.SelectedText = "\t";
+                }
+                Console.WriteLine("]");
+                richTextBox2.SelectedText = "]" + Environment.NewLine;
+            }
+            else if (r.children.Count() > 0)
+            {
+                var flag = false;
+                treeNode x = r.children[0];
+                foreach (treeNode p in r.children)
+                {
+                    if (p.tagName != x.tagName)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag)
+                {
+                    Console.WriteLine("{");
+                    richTextBox2.SelectedText = "{" + Environment.NewLine;
+                    foreach (treeNode i in r.children)
+                    {
+                        print(tree, i);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[");
+                    richTextBox2.SelectedText = "[" + Environment.NewLine;
+                    foreach (treeNode i in r.children)
+                    {
+                        if (i.children.Count() > 0)
+                        {
+                            int j = tree.height(i) + 1;
+                            for (int k = 0; k < j; k++)
+                            {
+                                Console.Write("\t");
+                                richTextBox2.SelectedText = "\t";
+                            }
+                            Console.WriteLine("{");
+                            richTextBox2.SelectedText = "{" + Environment.NewLine;
+                            foreach (treeNode f in i.children)
+                            {
+                                print(tree, f);
+                            }
+                            int g = tree.height(i) + 1;
+                            Console.Write("\n");
+                            richTextBox2.SelectedText = Environment.NewLine;
+                            for (int k = 0; k < g; k++)
+                            {
+                                Console.Write("\t");
+                                richTextBox2.SelectedText = "\t";
+                            }
+                            Console.Write("}");
+                            richTextBox2.SelectedText = "}";
+                            int index = r.children.IndexOf(i);
+                            if (index + 1 != r.children.Count())
+                            {
+                                Console.WriteLine(",");
+                                richTextBox2.SelectedText = "," + Environment.NewLine;
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                richTextBox2.SelectedText = Environment.NewLine;
+                            }
+                        }
+                        else if (i.children.Count() == 0)
+                        {
+                            int y = tree.height(i) + 1;
+                            for (int k = 0; k < y; k++)
+                            {
+                                Console.Write("\t");
+                                richTextBox2.SelectedText = "\t";
+                            }
+                            Console.Write('"' + i.data + '"');
+                            richTextBox2.SelectedText = '"' + i.data + '"';
+                            int index = r.children.IndexOf(i);
+                            if (index + 1 != r.children.Count())
+                            {
+                                Console.WriteLine(",");
+                                richTextBox2.SelectedText = "," + Environment.NewLine;
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                richTextBox2.SelectedText = Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+                for (int k = 0; k < tab; k++)
+                {
+                    Console.Write("\t");
+                    richTextBox2.SelectedText = "\t";
+                }
+                if (flag)
+                {
+                    Console.WriteLine("}");
+                    richTextBox2.SelectedText = "}" + Environment.NewLine;
+                }
+                else
+                {
+                    Console.Write("]");
+                    richTextBox2.SelectedText = "]";
+                    int index = r.parent.children.IndexOf(r);
+                    if (index + 1 != r.parent.children.Count())
+                    {
+                        Console.WriteLine(",");
+                        richTextBox2.SelectedText = "," + Environment.NewLine;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        richTextBox2.SelectedText = Environment.NewLine;
+                    }
+                }
+            }
+            if (r == tree.Root)
+            {
+                Console.WriteLine("}");
+                richTextBox2.SelectedText = "}" + Environment.NewLine;
+            }
+        }
+
+
         public void format(xmlTree tree , treeNode r, ref Stack<treeNode> s)
         {
             string l = "";
@@ -782,8 +946,9 @@ namespace XML2JSON
         }
         //xml2json
         private void button10_Click(object sender, EventArgs e)
-        { 
-            
+        {
+            richTextBox2.Clear();
+            print(tree, tree.Root);
         }
         //fix errors
         private void button11_Click(object sender, EventArgs e)
