@@ -15,6 +15,7 @@ namespace XML2JSON
     public partial class Form1 : Form
     {
         #region Variables
+        static string minifiedoutput;
         static string path;
         static List<treeNode> nodes = new List<treeNode>();
         xmlTree tree = new xmlTree();
@@ -83,6 +84,72 @@ namespace XML2JSON
                 
             }
 
+        }
+
+        /****************************************************************************/
+        /**************************Compress & Decompress*****************************/
+        public static List<short> Compress(string uncompressed)
+        {
+            // build the dictionary
+            Dictionary<string, short> dictionary = new Dictionary<string, short>();
+            for (short i = 0; i < 256; i++)
+                dictionary.Add(((char)i).ToString(), i);
+
+            string w = string.Empty;
+            List<short> compressed = new List<short>();
+
+            foreach (char c in uncompressed)
+            {
+                string wc = w + c;
+                if (dictionary.ContainsKey(wc))
+                {
+                    w = wc;
+                }
+                else
+                {
+                    // write w to output
+                    compressed.Add(dictionary[w]);
+                    // wc is a new sequence; add it to the dictionary
+                    dictionary.Add(wc, (short)dictionary.Count);
+                    w = c.ToString();
+                }
+            }
+
+            // write remaining output if necessary
+            if (!string.IsNullOrEmpty(w))
+                compressed.Add(dictionary[w]);
+
+            return compressed;
+        }
+
+        /*****************************Decompress********************************/
+        public static string Decompress(List<short> compressed)
+        {
+            // build the dictionary
+            Dictionary<short, string> dictionary = new Dictionary<short, string>();
+            for (short i = 0; i < 256; i++)
+                dictionary.Add(i, ((char)i).ToString());
+
+            string w = dictionary[compressed[0]];
+            compressed.RemoveAt(0);
+            StringBuilder decompressed = new StringBuilder(w);
+
+            foreach (short k in compressed)
+            {
+                string entry = null;
+                if (dictionary.ContainsKey(k))
+                    entry = dictionary[k];
+                else if (k == dictionary.Count)
+                    entry = w + w[0];
+
+                decompressed.Append(entry);
+
+                // new sequence; add it to the dictionary
+                dictionary.Add((short)dictionary.Count, w + entry[0]);
+                w = entry;
+            }
+
+            return decompressed.ToString();
         }
 
         /****************************************************************************/
@@ -942,6 +1009,7 @@ namespace XML2JSON
             foreach(string i in listBox3.Items)
             {
                 richTextBox2.SelectedText = i;
+                minifiedoutput += i;
             }
         }
         //xml2json
@@ -962,17 +1030,34 @@ namespace XML2JSON
             richTextBox2.Clear();
             Fix_XML_Errors(0);
         }
+        
+        //compress
+        private void button5_Click(object sender, EventArgs e)
+        {
+            path = Path.GetDirectoryName(path) + "/Formatit.xml";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            List<short> compressed;
+
+            compressed = Compress(minifiedoutput);
+            File.AppendAllText(path, string.Join("", compressed));
+            string decompressed = Decompress(compressed);
+            Console.WriteLine(decompressed);
+        }
+
         //check consistency
         private void button6_Click(object sender, EventArgs e)
         {
             xml_tags_to_array();
             for (int i = 0; i < tags.Count; i++)
             {
-                Console.WriteLine(tags[i]);
+                //Console.WriteLine(tags[i]);
             }
             bool status = Check_Consistency(tags);
-            Console.WriteLine(status);
+            //Console.WriteLine(status);
         }
-    }
-    
+    }   
 }
