@@ -31,13 +31,11 @@ namespace XML2JSON
         {
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.listBox2 = new System.Windows.Forms.ListBox();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.listBox3 = new System.Windows.Forms.ListBox();
             this.button8 = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -47,15 +45,14 @@ namespace XML2JSON
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.button12 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(21, 36);
+            this.button3.Location = new System.Drawing.Point(12, 12);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(171, 33);
+            this.button3.Size = new System.Drawing.Size(164, 26);
             this.button3.TabIndex = 0;
             this.button3.Text = "Choose XML file";
             this.button3.UseVisualStyleBackColor = true;
@@ -63,23 +60,13 @@ namespace XML2JSON
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(1438, 148);
+            this.button4.Location = new System.Drawing.Point(12, 58);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(218, 33);
+            this.button4.Size = new System.Drawing.Size(164, 26);
             this.button4.TabIndex = 1;
             this.button4.Text = "Save file";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // listBox2
-            // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.HorizontalScrollbar = true;
-            this.listBox2.ItemHeight = 20;
-            this.listBox2.Location = new System.Drawing.Point(1079, 75);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(61, 24);
-            this.listBox2.TabIndex = 2;
             // 
             // openFileDialog2
             // 
@@ -87,9 +74,9 @@ namespace XML2JSON
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1208, 36);
+            this.button5.Location = new System.Drawing.Point(343, 103);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(196, 33);
+            this.button5.Size = new System.Drawing.Size(88, 26);
             this.button5.TabIndex = 3;
             this.button5.Text = "Compress";
             this.button5.UseVisualStyleBackColor = true;
@@ -97,9 +84,9 @@ namespace XML2JSON
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(602, 36);
+            this.button6.Location = new System.Drawing.Point(567, 103);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(196, 33);
+            this.button6.Size = new System.Drawing.Size(164, 26);
             this.button6.TabIndex = 4;
             this.button6.Text = "Check Consistency";
             this.button6.UseVisualStyleBackColor = true;
@@ -107,9 +94,9 @@ namespace XML2JSON
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(804, 36);
+            this.button7.Location = new System.Drawing.Point(746, 103);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(196, 33);
+            this.button7.Size = new System.Drawing.Size(134, 27);
             this.button7.TabIndex = 5;
             this.button7.Text = "Show errors";
             this.button7.UseVisualStyleBackColor = true;
@@ -118,28 +105,18 @@ namespace XML2JSON
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(32, 71);
+            this.label2.Location = new System.Drawing.Point(215, 21);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(126, 20);
+            this.label2.Size = new System.Drawing.Size(113, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "No choosen files";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
-            // listBox3
-            // 
-            this.listBox3.FormattingEnabled = true;
-            this.listBox3.HorizontalScrollbar = true;
-            this.listBox3.ItemHeight = 20;
-            this.listBox3.Location = new System.Drawing.Point(1006, 75);
-            this.listBox3.Name = "listBox3";
-            this.listBox3.Size = new System.Drawing.Size(67, 24);
-            this.listBox3.TabIndex = 7;
-            // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(400, 36);
+            this.button8.Location = new System.Drawing.Point(12, 103);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(196, 33);
+            this.button8.Size = new System.Drawing.Size(86, 26);
             this.button8.TabIndex = 8;
             this.button8.Text = "Format";
             this.button8.UseVisualStyleBackColor = true;
@@ -147,29 +124,29 @@ namespace XML2JSON
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.Location = new System.Drawing.Point(21, 143);
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(12, 152);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(857, 600);
+            this.richTextBox1.Size = new System.Drawing.Size(658, 572);
             this.richTextBox1.TabIndex = 9;
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox2.Location = new System.Drawing.Point(897, 143);
+            this.richTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox2.Location = new System.Drawing.Point(692, 152);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(759, 600);
-            this.richTextBox2.TabIndex = 1;
+            this.richTextBox2.Size = new System.Drawing.Size(674, 572);
+            this.richTextBox2.TabIndex = 11;
             this.richTextBox2.Text = "";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(17, 120);
+            this.label3.Location = new System.Drawing.Point(12, 132);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 20);
+            this.label3.Size = new System.Drawing.Size(39, 17);
             this.label3.TabIndex = 12;
             this.label3.Text = "Input";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -177,17 +154,17 @@ namespace XML2JSON
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(893, 120);
+            this.label4.Location = new System.Drawing.Point(689, 132);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 20);
+            this.label4.Size = new System.Drawing.Size(51, 17);
             this.label4.TabIndex = 13;
             this.label4.Text = "Output";
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(198, 36);
+            this.button9.Location = new System.Drawing.Point(121, 103);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(196, 33);
+            this.button9.Size = new System.Drawing.Size(87, 26);
             this.button9.TabIndex = 14;
             this.button9.Text = "Minify";
             this.button9.UseVisualStyleBackColor = true;
@@ -195,9 +172,9 @@ namespace XML2JSON
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(1410, 36);
+            this.button10.Location = new System.Drawing.Point(214, 103);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(196, 33);
+            this.button10.Size = new System.Drawing.Size(123, 26);
             this.button10.TabIndex = 15;
             this.button10.Text = "XML to JSON";
             this.button10.UseVisualStyleBackColor = true;
@@ -205,43 +182,31 @@ namespace XML2JSON
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(1006, 36);
+            this.button11.Location = new System.Drawing.Point(899, 103);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(196, 33);
+            this.button11.Size = new System.Drawing.Size(112, 26);
             this.button11.TabIndex = 16;
             this.button11.Text = "Fix Errors";
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
-            // label5
+            // button12
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(570, 94);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 20);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "label5";
-            this.label5.Visible = false;
-            this.label5.Click += new System.EventHandler(this.label5_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(660, 94);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(51, 20);
-            this.label6.TabIndex = 18;
-            this.label6.Text = "label6";
-            this.label6.Visible = false;
+            this.button12.Location = new System.Drawing.Point(437, 103);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(105, 27);
+            this.button12.TabIndex = 17;
+            this.button12.Text = "Decompress";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // Form1
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(8, 19);
+            this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1430, 803);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
+            this.ClientSize = new System.Drawing.Size(1378, 751);
+            this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
@@ -250,12 +215,10 @@ namespace XML2JSON
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button8);
-            this.Controls.Add(this.listBox3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
-            this.Controls.Add(this.listBox2);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Name = "Form1";
@@ -275,13 +238,11 @@ namespace XML2JSON
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.OpenFileDialog openFileDialog2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ListBox listBox3;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.RichTextBox richTextBox1;
@@ -291,8 +252,7 @@ namespace XML2JSON
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button12;
     }
 }
 

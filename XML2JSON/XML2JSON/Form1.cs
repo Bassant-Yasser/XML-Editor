@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,22 +16,30 @@ namespace XML2JSON
     {
         #region Variables
         static string minifiedoutput;
+        static string decompressed;
         static string path;
+        static string savedFile;
+        static string p;
+        static string pc;
         static List<treeNode> nodes = new List<treeNode>();
         xmlTree tree = new xmlTree();
+        xmlTree ctree = new xmlTree();
         static Stack<int> Tag = new Stack<int>();
         static Stack<treeNode> st = new Stack<treeNode>();
 
         List<string> tags = new List<string>();
         List<int> errors_index = new List<int>();
-        String text, text2;
+        String text, text2, t;
         int flag = 0;
+        bool status = true;
         #endregion
         public Form1()
         {
             InitializeComponent();
         }
-        void cutter(string l)
+
+        //create xml file of a cutted data in each line
+        void cutter(string l, string p)
         {
             var start = 0;
             var end = 0;
@@ -78,12 +86,9 @@ namespace XML2JSON
                     }
                 if (line[0] != ' ' || line[1] != ' ' || line[2] != ' ')
                 {
-                    listBox3.Items.Add(line);
+                    File.AppendAllText(p, line + "\n");
                 }
-                
-                
             }
-
         }
 
         /****************************************************************************/
@@ -151,6 +156,7 @@ namespace XML2JSON
 
             return decompressed.ToString();
         }
+
 
         /****************************************************************************/
         /****************************Check Consistency*******************************/
@@ -225,7 +231,6 @@ namespace XML2JSON
         }
         /****************************************************************************/
 
-
         public class treeNode
         {
             #region fields
@@ -263,6 +268,15 @@ namespace XML2JSON
                     return true;
                 }
             }
+            public bool RemoveAllChildren()
+            {
+                for (int i = children.Count - 1; i >= 0; i--)
+                {
+                    children[i].parent = null;
+                    children.RemoveAt(i);
+                }
+                return true;
+            }
             #endregion
         }
         public class xmlTree
@@ -289,6 +303,23 @@ namespace XML2JSON
             }
             #endregion
             #region methods
+            public void Clear()
+            {
+                // remove all the children from each node
+                // so nodes can be garbage collected
+                foreach (treeNode node in nodes)
+                {
+                    node.parent = null;
+                    node.RemoveAllChildren();
+                }
+
+                // now remove all the nodes from the tree and set root to null
+                for (int i = nodes.Count - 1; i >= 0; i--)
+                {
+                    nodes.RemoveAt(i);
+                }
+                root = null;
+            }
             public void addNode(treeNode p, treeNode node)
             {
                 node.parent = p;
@@ -310,7 +341,6 @@ namespace XML2JSON
             {
                 n.data += d;
             }
-            
             public int height(treeNode node)
             {
                 if (node == root)
@@ -319,12 +349,33 @@ namespace XML2JSON
                 }
                 return (1 + height(node.parent));
             }
+            public void p(treeNode r)
+            {
+                if(r == root)
+                {
+                    Console.WriteLine(r.tagName);
+                }
+                if(r.children.Count() > 0)
+                {
+                    foreach(treeNode i in r.children)
+                    {
+                        Console.WriteLine(i.tagName + "\t" + i.data + "\t" + i.attr + "\t" + "parent: " + i.parent.tagName);
+                    }
+                    foreach(treeNode j in r.children)
+                    {
+                        p(j);
+                    }
+                }
+            }
             #endregion
-
         }
-
+        //create tree with 
         void createTree(string file)
         {
+            treeNode n = tree.createNode("null", "");
+            tree.addRoot(n);//add tree root to the tree
+            nodes.Add(n);
+            Tag.Push(nodes.Count() - 1);//add the last opened tag to deal with it to add children or data to it 
             string input = " ";
             StreamReader sr = new StreamReader(file);
             while (input != null)
@@ -332,38 +383,41 @@ namespace XML2JSON
                 input = sr.ReadLine();
                 if (input != null)
                 {
-                    if (input[0] == '<' && (input[1] == '!' || input[1] == '?'))
+                    //comment or self closing tag ba5od el tag kloh
+                    if (input[0] == '<' && (input[1] == '!' || input[1] == '?' || input[input.Length - 2] == '/'))
                     {
+                        treeNode c = tree.createNode(input, "");//decalre a new tag
+                        tree.addNode(nodes[Tag.Peek()], c);
                         continue;
                     }
-                    if (input[0] == '<' && input[1] != '/')
+                    //opening tag
+                    if (input[0] == '<' && (input[1] != '/'))// || input[1] != '!' || input[1] != '?' || input[input.Length - 2] != '/'))
                     {
-
                         var index = input.Length - 1;
                         var flag = false;
                         // Searching for the space to get the tag name only from the line
-                        if(input.Contains(" "))
+                        if (input.Contains(" "))
                         {
                             index = input.IndexOf(" ");
                             //First white space in the tag
                             flag = true;
                             break;
                         }
-         
                         string tag = input.Substring(1, index - 1);
                         if (!flag)
                         {
                             nodes.Add(tree.createNode(tag, ""));//decalre a new tag 
+                            //Console.WriteLine(nodes.Count());
                         }
                         else
                         {
                             string att = input.Substring(index + 1, (input.Length - index - 2));
                             nodes.Add(tree.createNode(tag, att));//decalre a new tag 
+                            //Console.WriteLine(nodes.Count());
                         }
-                        
                         if (Tag.Count() == 0)
                         {
-                            tree.addRoot(nodes[nodes.Count() - 1]);//add tree root to the tree
+                           
                         }
                         else
                         {
@@ -387,41 +441,102 @@ namespace XML2JSON
 
                     }
                 }
-                
+
             }
-            
+            sr.Close();
         }
-
-
+        void cTree(string file)
+        {
+            string input = " ";
+            StreamReader sr = new StreamReader(file);
+            while (input != null)
+            {
+                input = sr.ReadLine();
+                if (input != null)
+                {
+                    if (input[0] == '<' && (input[1] == '!' || input[1] == '?'))
+                    {
+                        continue;
+                    }
+                    if (input[0] == '<' && input[1] != '/')
+                    {
+                        var index = input.Length - 1;
+                        var flag = false;
+                        // Searching for the space to get the tag name only from the line
+                        if (input.Contains(" "))
+                        {
+                            index = input.IndexOf(" ");
+                            //First white space in the tag
+                            flag = true;
+                            break;
+                        }
+                        string tag = input.Substring(1, index - 1);
+                        if (!flag)
+                        {
+                            nodes.Add(ctree.createNode(tag, ""));//decalre a new tag 
+                        }
+                        else
+                        {
+                            string att = input.Substring(index + 1, (input.Length - index - 2));
+                            nodes.Add(ctree.createNode(tag, att));//decalre a new tag 
+                        }
+                        if (Tag.Count() == 0)
+                        {
+                            ctree.addRoot(nodes[nodes.Count() - 1]);//add tree root to the tree
+                        }
+                        else
+                        {
+                            ctree.addNode(nodes[Tag.Peek()], nodes[nodes.Count() - 1]);//add a child to the last opened tag
+                        }
+                        Tag.Push(nodes.Count() - 1);//add the last opened tag to deal with it to add children or data to it 
+                        if (input[input.Length - 2] == '/')
+                        {
+                            Tag.Pop();//self closing tag 
+                        }
+                    }
+                    //Closing tag
+                    else if (input[0] == '<' && input[1] == '/')
+                    {
+                        Tag.Pop();//remove the last opend tag (closed) to deal with the next tag to it 
+                    }
+                    //Data
+                    else
+                    {
+                        ctree.addData(nodes[Tag.Peek()], input);//add data to the last opened tag
+                    }
+                }
+            }
+            sr.Close();
+        }
         public void print(xmlTree tree, treeNode r)
         {
             int tab = tree.height(r) + 1; //level num + 1 extra tab 
             if (r == tree.Root)
             {
-                Console.WriteLine("{");
+                //Console.WriteLine("{");
                 richTextBox2.SelectedText = "{" + Environment.NewLine;
             }
             for (int k = 0; k < tab; k++)
             {
-                Console.Write("\t");
+                //Console.Write("\t");
                 richTextBox2.SelectedText = "\t";
             }
-            Console.Write('"' + r.tagName + '"' + ": ");
+            //Console.Write('"' + r.tagName + '"' + ": ");
             richTextBox2.SelectedText = '"' + r.tagName + '"' + ": ";
             if (r.children.Count() == 0)
             {
-                Console.Write('"' + r.data + '"');
+                //Console.Write('"' + r.data + '"');
                 richTextBox2.SelectedText = '"' + r.data + '"';
                 int index = r.parent.children.IndexOf(r);
                 if (index + 1 != r.parent.children.Count())
                 {
-                    Console.WriteLine(",");
+                    //Console.WriteLine(",");
                     richTextBox2.SelectedText = "," + Environment.NewLine;
                 }
             }
             else if (r.children.Count() == 1)
             {
-                Console.WriteLine("[");
+                //Console.WriteLine("[");
                 richTextBox2.SelectedText = "[" + Environment.NewLine;
                 foreach (treeNode i in r.children)
                 {
@@ -429,10 +544,10 @@ namespace XML2JSON
                 }
                 for (int k = 0; k < tab; k++)
                 {
-                    Console.Write("\t");
+                    //Console.Write("\t");
                     richTextBox2.SelectedText = "\t";
                 }
-                Console.WriteLine("]");
+                //Console.WriteLine("]");
                 richTextBox2.SelectedText = "]" + Environment.NewLine;
             }
             else if (r.children.Count() > 0)
@@ -449,7 +564,7 @@ namespace XML2JSON
                 }
                 if (flag)
                 {
-                    Console.WriteLine("{");
+                    //Console.WriteLine("{");
                     richTextBox2.SelectedText = "{" + Environment.NewLine;
                     foreach (treeNode i in r.children)
                     {
@@ -458,7 +573,7 @@ namespace XML2JSON
                 }
                 else
                 {
-                    Console.WriteLine("[");
+                    //Console.WriteLine("[");
                     richTextBox2.SelectedText = "[" + Environment.NewLine;
                     foreach (treeNode i in r.children)
                     {
@@ -467,34 +582,34 @@ namespace XML2JSON
                             int j = tree.height(i) + 1;
                             for (int k = 0; k < j; k++)
                             {
-                                Console.Write("\t");
+                                //Console.Write("\t");
                                 richTextBox2.SelectedText = "\t";
                             }
-                            Console.WriteLine("{");
+                            //Console.WriteLine("{");
                             richTextBox2.SelectedText = "{" + Environment.NewLine;
                             foreach (treeNode f in i.children)
                             {
                                 print(tree, f);
                             }
                             int g = tree.height(i) + 1;
-                            Console.Write("\n");
+                            //Console.Write("\n");
                             richTextBox2.SelectedText = Environment.NewLine;
                             for (int k = 0; k < g; k++)
                             {
-                                Console.Write("\t");
+                                //Console.Write("\t");
                                 richTextBox2.SelectedText = "\t";
                             }
-                            Console.Write("}");
+                            //Console.Write("}");
                             richTextBox2.SelectedText = "}";
                             int index = r.children.IndexOf(i);
                             if (index + 1 != r.children.Count())
                             {
-                                Console.WriteLine(",");
+                                //Console.WriteLine(",");
                                 richTextBox2.SelectedText = "," + Environment.NewLine;
                             }
                             else
                             {
-                                Console.WriteLine();
+                                //Console.WriteLine();
                                 richTextBox2.SelectedText = Environment.NewLine;
                             }
                         }
@@ -503,20 +618,20 @@ namespace XML2JSON
                             int y = tree.height(i) + 1;
                             for (int k = 0; k < y; k++)
                             {
-                                Console.Write("\t");
+                                //Console.Write("\t");
                                 richTextBox2.SelectedText = "\t";
                             }
-                            Console.Write('"' + i.data + '"');
+                            //Console.Write('"' + i.data + '"');
                             richTextBox2.SelectedText = '"' + i.data + '"';
                             int index = r.children.IndexOf(i);
                             if (index + 1 != r.children.Count())
                             {
-                                Console.WriteLine(",");
+                                //Console.WriteLine(",");
                                 richTextBox2.SelectedText = "," + Environment.NewLine;
                             }
                             else
                             {
-                                Console.WriteLine();
+                                //Console.WriteLine();
                                 richTextBox2.SelectedText = Environment.NewLine;
                             }
                         }
@@ -524,74 +639,67 @@ namespace XML2JSON
                 }
                 for (int k = 0; k < tab; k++)
                 {
-                    Console.Write("\t");
+                    //Console.Write("\t");
                     richTextBox2.SelectedText = "\t";
                 }
                 if (flag)
                 {
-                    Console.WriteLine("}");
+                    //Console.WriteLine("}");
                     richTextBox2.SelectedText = "}" + Environment.NewLine;
                 }
                 else
                 {
-                    Console.Write("]");
+                    //Console.Write("]");
                     richTextBox2.SelectedText = "]";
                     int index = r.parent.children.IndexOf(r);
                     if (index + 1 != r.parent.children.Count())
                     {
-                        Console.WriteLine(",");
+                        //Console.WriteLine(",");
                         richTextBox2.SelectedText = "," + Environment.NewLine;
                     }
                     else
                     {
-                        Console.WriteLine();
+                        //Console.WriteLine();
                         richTextBox2.SelectedText = Environment.NewLine;
                     }
                 }
             }
             if (r == tree.Root)
-            {
-                Console.WriteLine("}");
+            {               
+                //Console.WriteLine("}");
                 richTextBox2.SelectedText = "}" + Environment.NewLine;
             }
         }
-
-
-        public void format(xmlTree tree , treeNode r, ref Stack<treeNode> s)
+        public void format(xmlTree tree, treeNode r, ref Stack<treeNode> s)
         {
-            string l = "";
             if (r == tree.Root)
             {
-                richTextBox2.SelectedText = "<" + r.tagName + ">" + Environment.NewLine;
-                //Console.WriteLine("<" + r.tagName + ">");
-                l = "";
-                l = "<" + r.tagName + ">";
-                s.Push(r);
+            }
+            else if (r.tagName.Contains("<"))
+            {
+                int i = tree.height(r) - 1;
+                for (int k = 0; k < i; k++)
+                {
+                    richTextBox2.SelectedText = "\t";
+                }
+                richTextBox2.SelectedText = r.tagName + Environment.NewLine;
             }
             else
             {
-                int i = tree.height(r);
-                l = "";
+                int i = tree.height(r) - 1;
                 for (int k = 0; k < i; k++)
                 {
-                    //Console.Write("\t");
-                    l += "\t";
+                    richTextBox2.SelectedText = "\t";
                 }
                 if (r.data != "")
                 {
-                    
-                    //Console.WriteLine("<" + r.tagName + ">" + r.data + "</" + r.tagName + ">");
-                    l += "<" + r.tagName + ">" + r.data + "</" + r.tagName + ">";
-                    richTextBox2.SelectedText = l + Environment.NewLine;
+                    richTextBox2.SelectedText = "<" + r.tagName + ">" + r.data + "</" + r.tagName + ">" + Environment.NewLine;
                 }
                 else
                 {
-                    //Console.WriteLine("<" + r.tagName + ">");
-                    l += "<" + r.tagName + ">";
-                    richTextBox2.SelectedText = l + Environment.NewLine;
+                    richTextBox2.SelectedText = "<" + r.tagName + ">" + Environment.NewLine;
                     s.Push(r);
                 }
-
             }
             if (r.children.Count() > 0)
             {
@@ -603,21 +711,39 @@ namespace XML2JSON
                 {
                     treeNode n = s.Peek();
                     s.Pop();
-                    int f = tree.height(n);
-                    l = "";
+                    int f = tree.height(n) - 1;
                     for (int k = 0; k < f; k++)
                     {
-                        //Console.Write("\t");
-                        l += "\t";
+                        richTextBox2.SelectedText = "\t";
                     }
-                    //Console.WriteLine("</" + n.tagName + ">");
-                    l += "</" + n.tagName + ">";
-                    richTextBox2.SelectedText = l + Environment.NewLine;
+                    richTextBox2.SelectedText = "</" + n.tagName + ">" + Environment.NewLine;
                 }
             }
-
         }
-
+        void reset()
+        {
+            
+            tree.Clear();
+            ctree.Clear();
+            path = "";
+            savedFile = "";
+            minifiedoutput = "";
+            decompressed = "";
+            richTextBox1.Clear();
+            richTextBox2.Clear();
+            status = true;
+            nodes.Clear();
+            Tag.Clear();
+            st.Clear();
+            tags.Clear();
+            errors_index.Clear();
+            text = "";
+            text2 = "";
+            t = "";
+            flag = 0;
+            
+            p = "";
+        }
         private void xml_tags_to_array()
         {
             for (int i = 0; i < text.Count(); i++)
@@ -867,7 +993,7 @@ namespace XML2JSON
                                 {
                                     richTextBox2.SelectedText += str2 + Environment.NewLine;
                                 }
-                                stack.Pop();                                
+                                stack.Pop();
                                 spaces.Pop();
                                 if (stack.Count() == 0)
                                 {
@@ -875,7 +1001,7 @@ namespace XML2JSON
                                 }
                             }
                         }
-                        
+
 
                         if (fix_show_errors == 1)
                         {
@@ -928,13 +1054,11 @@ namespace XML2JSON
             }
             return count;
         }
-
         //title
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             openFileDialog2.Filter = "XML Files (.xml)|*.xml";
@@ -942,16 +1066,21 @@ namespace XML2JSON
         //choose file
         private void button3_Click(object sender, EventArgs e)
         {
+            reset();
             OpenFileDialog openFileDialog2 = new OpenFileDialog();
             string line = " ";
             if (openFileDialog2.ShowDialog() == DialogResult.OK)
             {
-                richTextBox1.Clear();
-                richTextBox2.Clear();
                 path = openFileDialog2.FileName;
                 text = File.ReadAllText(path);
                 text2 = File.ReadAllText(path);
+                t = File.ReadAllText(path);
                 label2.Text = path;
+                p = Path.GetDirectoryName(path) + "/cut.xml";
+                if (File.Exists(p))
+                {
+                    File.Delete(p);
+                }
                 StreamReader sr = new StreamReader(path);
                 while (line != null)
                 {
@@ -965,32 +1094,17 @@ namespace XML2JSON
                         {
                             line = line.Remove(0, 1);
                         }
-                        cutter(line);
-                        
+                        cutter(line, p);
                     }
                 }
                 sr.Close();
             }
-            path = Path.GetDirectoryName(path) + "/Formatit.xml";
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            //File.Create(path);
-            foreach (string i in listBox3.Items)
-            {
-                File.AppendAllText(path, i + "\n");
-            }
-            xml_tags_to_array();
-            bool status = Check_Consistency(tags);
-            //Console.WriteLine(status);
-            
+            //xml_tags_to_array();
+            //status = Check_Consistency(tags);
             if (status)
             {
-                createTree(path);
+                createTree(p);
             }
-            
-            
         }
         private void label2_Click(object sender, EventArgs e)
         {
@@ -1001,23 +1115,28 @@ namespace XML2JSON
         {
             richTextBox2.Clear();
             format(tree, tree.Root, ref st);
-
-
-
-
         }
         //save file
         private void button4_Click(object sender, EventArgs e)
         {
-            
-         
+            SaveFileDialog SaveFileDialog1 = new SaveFileDialog();
+            SaveFileDialog1.InitialDirectory = @"C:\Users\Lenovo\Desktop";
+            SaveFileDialog1.RestoreDirectory = true;
+            SaveFileDialog1.Filter = "All files (*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                savedFile = saveFileDialog1.FileName;
+            }
+            if (File.Exists(savedFile))
+            {
+                File.Delete(savedFile);
+            }
+            File.AppendAllText(savedFile, richTextBox2.Text);
         }
-
         private void label3_Click(object sender, EventArgs e)
         {
 
         }
-
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
@@ -1025,18 +1144,37 @@ namespace XML2JSON
         //Minify
         private void button9_Click(object sender, EventArgs e)
         {
-            
-            foreach(string i in listBox3.Items)
+            richTextBox2.Clear();
+            string line = " ";
+            StreamReader sr = new StreamReader(p);
+            while (line != null)
             {
-                richTextBox2.SelectedText = i;
-                minifiedoutput += i;
+                line = sr.ReadLine();
+                if (line != null)
+                {
+                    int num = 0;
+
+                    while(num < line.Length && line[num] != '\0')
+                    {
+                        minifiedoutput += line[num];
+                        num++;
+                    }
+                    //string c = line.Replace("\0", string.Empty);
+                    //minifiedoutput += c;
+                }
             }
+            richTextBox2.Text = minifiedoutput;
+            sr.Close();
         }
         //xml2json
         private void button10_Click(object sender, EventArgs e)
-        {
+        { 
             richTextBox2.Clear();
-            print(tree, tree.Root);
+            nodes.Clear();
+            Tag.Clear();
+            st.Clear();
+            cTree(p);
+            print(ctree, ctree.Root);
         }
         //fix errors
         private void button11_Click(object sender, EventArgs e)
@@ -1050,11 +1188,27 @@ namespace XML2JSON
             richTextBox2.Clear();
             Fix_XML_Errors(0);
         }
-        
+
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
         //compress
         private void button5_Click(object sender, EventArgs e)
         {
-            path = Path.GetDirectoryName(path) + "/Formatit.xml";
+            minifiedoutput = "";
+            string line = " ";
+            StreamReader sr = new StreamReader(p);
+            while (line != null)
+            {
+                line = sr.ReadLine();
+                if (line != null)
+                {
+                    minifiedoutput += line;
+                }
+            }
+            sr.Close();
+            path = Path.GetDirectoryName(path) + "/Compressed.xml";
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -1064,15 +1218,38 @@ namespace XML2JSON
 
             compressed = Compress(minifiedoutput);
             File.AppendAllText(path, string.Join("", compressed));
-            string decompressed = Decompress(compressed);
+            decompressed = Decompress(compressed);
             Console.WriteLine(decompressed);
         }
-
-        private void label5_Click(object sender, EventArgs e)
+        //decompress
+        private void button12_Click(object sender, EventArgs e)
         {
-
+            richTextBox2.Clear();
+            //decompressed = "";
+            pc = Path.GetDirectoryName(path) + "/decompressed.xml";
+            if (File.Exists(pc))
+            {
+                File.Delete(pc);
+            }
+            cutter(decompressed, pc);
+            tree.Clear();
+            createTree(pc);
+            st.Clear();
+            nodes.Clear();
+            format(tree, tree.Root, ref st);
+            /*string line = " ";
+            StreamReader s = new StreamReader(p);
+            while (line != null)
+            {
+                line = s.ReadLine();
+                if (line != null)
+                {
+                    richTextBox2.SelectedText = line + Environment.NewLine;
+                    Console.WriteLine(line);
+                }
+            }
+            s.Close();*/
         }
-
         //check consistency
         private void button6_Click(object sender, EventArgs e)
         {
@@ -1081,8 +1258,9 @@ namespace XML2JSON
             {
                 //Console.WriteLine(tags[i]);
             }
-            bool status = Check_Consistency(tags);
+            status = Check_Consistency(tags);
             //Console.WriteLine(status);
         }
-    }   
+    }
+    
 }
