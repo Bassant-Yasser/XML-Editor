@@ -160,7 +160,11 @@ namespace XML2JSON
             mystack.Push(tags[0]);
             for (int i = 1; i < tags.Count; i++)
             {
-                if (tags[i] == "frame")
+                if (tags[i] == "frame/")
+                {
+                    // do nothing
+                }
+                else if (tags[i] == "?xml")
                 {
                     // do nothing
                 }
