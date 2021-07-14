@@ -885,7 +885,6 @@ namespace XML2JSON
                                     richTextBox2.SelectionColor = Color.Black;
                                     richTextBox2.SelectedText += strings[i];
                                 }
-
                             }
                             else
                             {
@@ -973,8 +972,6 @@ namespace XML2JSON
                         {
                             richTextBox2.SelectedText += str + Environment.NewLine;
                         }
-
-
                         spaces.Pop();
                         stack.Pop();
                         if (stack.Count() != 0)
@@ -1040,7 +1037,6 @@ namespace XML2JSON
                     }
                 }
             }
-            Console.WriteLine(errors);
         }
 
         private int Count_Spaces(string str)
@@ -1114,6 +1110,9 @@ namespace XML2JSON
         private void button8_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = true;
+            textBox2.Visible = false;
             format(tree, tree.Root, ref st);
         }
         //save file
@@ -1145,6 +1144,12 @@ namespace XML2JSON
         private void button9_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = false;
+            textBox2.Visible = true;
+
+            minifiedoutput = "";
+
             string line = " ";
             StreamReader sr = new StreamReader(p);
             while (line != null)
@@ -1152,24 +1157,23 @@ namespace XML2JSON
                 line = sr.ReadLine();
                 if (line != null)
                 {
-                    int num = 0;
-
-                    while(num < line.Length && line[num] != '\0')
+                    for(int i = 0; i < line.Length; i++)
                     {
-                        minifiedoutput += line[num];
-                        num++;
+                        if(line[i] != ' ' && line[i] != '\t') 
+                            minifiedoutput += line[i];
                     }
-                    //string c = line.Replace("\0", string.Empty);
-                    //minifiedoutput += c;
                 }
             }
-            richTextBox2.Text = minifiedoutput;
+            textBox2.Text = minifiedoutput;
             sr.Close();
         }
         //xml2json
         private void button10_Click(object sender, EventArgs e)
-        { 
+        {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = true;
+            textBox2.Visible = false;
             nodes.Clear();
             Tag.Clear();
             st.Clear();
@@ -1180,12 +1184,18 @@ namespace XML2JSON
         private void button11_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = true;
+            textBox2.Visible = false;
             Fix_XML_Errors(1);
         }
         //show errors
         private void button7_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = true;
+            textBox2.Visible = false;
             Fix_XML_Errors(0);
         }
 
@@ -1221,10 +1231,19 @@ namespace XML2JSON
             decompressed = Decompress(compressed);
             Console.WriteLine(decompressed);
         }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
         //decompress
         private void button12_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            textBox2.Clear();
+            richTextBox2.Visible = true;
+            textBox2.Visible = false;
             //decompressed = "";
             pc = Path.GetDirectoryName(path) + "/decompressed.xml";
             if (File.Exists(pc))
@@ -1237,28 +1256,28 @@ namespace XML2JSON
             st.Clear();
             nodes.Clear();
             format(tree, tree.Root, ref st);
-            /*string line = " ";
-            StreamReader s = new StreamReader(p);
-            while (line != null)
-            {
-                line = s.ReadLine();
-                if (line != null)
-                {
-                    richTextBox2.SelectedText = line + Environment.NewLine;
-                    Console.WriteLine(line);
-                }
-            }
-            s.Close();*/
         }
         //check consistency
         private void button6_Click(object sender, EventArgs e)
         {
             xml_tags_to_array();
-            for (int i = 0; i < tags.Count; i++)
-            {
-                //Console.WriteLine(tags[i]);
-            }
             status = Check_Consistency(tags);
+            label5.Visible = true;
+            if (status)
+            {
+                label5.Text = "File is consistent";
+                label5.ForeColor = Color.Black;
+                button7.Enabled = false;
+                button11.Enabled = false;
+            }
+            else
+            {
+                label5.Text = "File is  not consistent";
+                label5.ForeColor = Color.Red;
+                //label5.Font = ;
+                button7.Enabled = true;
+                button11.Enabled = true;
+            }
             //Console.WriteLine(status);
         }
     }

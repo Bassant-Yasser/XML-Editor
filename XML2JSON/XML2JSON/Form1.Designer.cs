@@ -46,6 +46,8 @@ namespace XML2JSON
             this.button10 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button3
@@ -94,6 +96,7 @@ namespace XML2JSON
             // 
             // button7
             // 
+            this.button7.Enabled = false;
             this.button7.Location = new System.Drawing.Point(746, 103);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(134, 27);
@@ -135,9 +138,9 @@ namespace XML2JSON
             // richTextBox2
             // 
             this.richTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox2.Location = new System.Drawing.Point(692, 152);
+            this.richTextBox2.Location = new System.Drawing.Point(692, 155);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(674, 572);
+            this.richTextBox2.Size = new System.Drawing.Size(674, 569);
             this.richTextBox2.TabIndex = 11;
             this.richTextBox2.Text = "";
             // 
@@ -182,6 +185,7 @@ namespace XML2JSON
             // 
             // button11
             // 
+            this.button11.Enabled = false;
             this.button11.Location = new System.Drawing.Point(899, 103);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(112, 26);
@@ -200,12 +204,34 @@ namespace XML2JSON
             this.button12.UseVisualStyleBackColor = true;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(443, 45);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 24);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "label5";
+            this.label5.Visible = false;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(692, 155);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(674, 569);
+            this.textBox2.TabIndex = 19;
+            this.textBox2.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.AutoScroll = true;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1378, 751);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.button10);
@@ -222,6 +248,7 @@ namespace XML2JSON
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load_1);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -253,6 +280,8 @@ namespace XML2JSON
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox2;
     }
 }
 
