@@ -17,3 +17,12 @@ D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML2JS
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csproj.GenerateResource.Cache
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.exe
 D:\Bassant\3rd CSE Second term\Data Structure\XML project\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.pdb
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\bin\Debug\XML2JSON.exe.config
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\bin\Debug\XML2JSON.exe
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\bin\Debug\XML2JSON.pdb
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.Form1.resources
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.Properties.Resources.resources
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csproj.GenerateResource.cache
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.csproj.CoreCompileInputs.cache
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.exe
+E:\latest_desktop\2nd term computer\data structure\XML2JSON\Repo\XML-Editor\XML2JSON\XML2JSON\obj\Debug\XML2JSON.pdb

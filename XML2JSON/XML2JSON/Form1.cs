@@ -1187,6 +1187,7 @@ namespace XML2JSON
             textBox2.Clear();
             richTextBox2.Visible = true;
             textBox2.Visible = false;
+            label5.Visible = false;
             Fix_XML_Errors(1);
         }
         //show errors
@@ -1255,7 +1256,20 @@ namespace XML2JSON
             createTree(pc);
             st.Clear();
             nodes.Clear();
-            format(tree, tree.Root, ref st);
+            string line = " ";
+            StreamReader sr = new StreamReader(p);
+            while (line != null)
+            {
+                line = sr.ReadLine();
+                if (line != null)
+                {
+                    richTextBox2.SelectedText = line + Environment.NewLine;
+                }
+            }
+            
+            sr.Close();
+
+            
         }
         //check consistency
         private void button6_Click(object sender, EventArgs e)
